@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roofkeep – Rooftop Defense</title>
+<meta name="description" content="Halte die Dächer. Bau Türme aus Schrott, spring rein und hol die Drohnen selbst vom Himmel. Kostenlos im Browser auf CrazyGames.">
+<meta property="og:title" content="Roofkeep – Rooftop Defense">
+<meta property="og:description" content="Tower Defense mit Turm-Shooter auf den Dächern einer Nacht-Stadt. Kostenlos im Browser auf CrazyGames.">
+<meta property="og:image" content="img/hero.webp">
+<meta name="theme-color" content="#140d24">
+<link rel="icon" href="img/tower_dish.webp">
+<style>
+@font-face{font-family:Saira;src:url(fonts/saira-latin-400-normal.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:Saira;src:url(fonts/saira-latin-700-normal.woff2) format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:Stencil;src:url(fonts/saira-stencil-one-latin-400-normal.woff2) format('woff2');font-display:swap}
+:root{--bg:#120c20;--panel:#1d1532;--line:#33284d;--text:#f1ebe0;--muted:#b9aec8;--lime:#c6ff3d;--orange:#ff7a2f;--red:#ff3d5a}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:17px/1.6 Saira,system-ui,sans-serif;overflow-x:hidden}
+a{color:inherit}
+img{display:block;max-width:100%}
+.lang{position:absolute;top:16px;right:16px;z-index:5;display:flex;gap:4px}
+.lang button{background:rgba(18,12,32,.6);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:4px 10px;font:600 13px Saira,sans-serif;cursor:pointer}
+.lang button[aria-pressed=true]{color:var(--bg);background:var(--lime);border-color:var(--lime)}
+
+/* Hero */
+.hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;padding:0 16px 9vh;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0;z-index:-2;background:url(img/hero.webp) center 30%/cover no-repeat;animation:drift 30s ease-in-out infinite alternate}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(18,12,32,.15) 0%,rgba(18,12,32,0) 35%,rgba(18,12,32,.75) 72%,var(--bg) 100%),linear-gradient(90deg,rgba(18,12,32,.55) 0%,rgba(18,12,32,0) 55%)}
+@keyframes drift{from{transform:scale(1.02)}to{transform:scale(1.08) translateX(-1%)}}
+.hero-in{max-width:1100px;margin:0 auto;width:100%}
+.logo{width:min(560px,86vw);filter:drop-shadow(0 6px 24px rgba(0,0,0,.6))}
+.tag{font:400 clamp(20px,3vw,28px)/1.3 Stencil,Saira,sans-serif;letter-spacing:.04em;margin:18px 0 8px;text-shadow:0 2px 12px rgba(0,0,0,.8)}
+.sub{max-width:34em;color:var(--muted);margin:0 0 28px;text-shadow:0 1px 8px rgba(0,0,0,.9)}
+.cta{display:inline-flex;align-items:center;gap:12px;background:var(--lime);color:#14101f;text-decoration:none;font:700 20px Saira,sans-serif;letter-spacing:.02em;padding:16px 30px;border-radius:12px;box-shadow:0 0 0 0 rgba(198,255,61,.55),0 10px 30px rgba(0,0,0,.45);animation:pulse 2.4s ease-out infinite;transition:transform .15s}
+.cta:hover{transform:translateY(-2px) scale(1.02)}
+.cta svg{width:22px;height:22px}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(198,255,61,.5),0 10px 30px rgba(0,0,0,.45)}70%{box-shadow:0 0 0 18px rgba(198,255,61,0),0 10px 30px rgba(0,0,0,.45)}100%{box-shadow:0 0 0 0 rgba(198,255,61,0),0 10px 30px rgba(0,0,0,.45)}}
+.meta{margin-top:16px;font-size:14px;color:var(--muted)}
+.meta span{display:inline-block;margin-right:14px}
+.meta span::before{content:"▸ ";color:var(--orange)}
+
+/* Abschnitte */
+section{max-width:1100px;margin:0 auto;padding:72px 16px 0}
+h2{font:400 clamp(26px,4vw,36px)/1.2 Stencil,Saira,sans-serif;letter-spacing:.03em;margin:0 0 8px}
+h2 em{font-style:normal;color:var(--lime)}
+.lead{color:var(--muted);max-width:40em;margin:0 0 32px}
+.shots{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.shot{margin:0;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--panel)}
+.shot img{aspect-ratio:16/9;object-fit:cover;width:100%;transition:transform .4s}
+.shot:hover img{transform:scale(1.03)}
+.shot figcaption{padding:12px 16px;font-size:15px;color:var(--muted)}
+.shot b{color:var(--text)}
+.towers{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.tower{background:linear-gradient(180deg,var(--panel),#160f28);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+.tower img{width:100%;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 6px 14px rgba(0,0,0,.5))}
+.tower b{display:block;margin-top:6px;font-size:18px}
+.tower span{font-size:14px;color:var(--muted)}
+.feats{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feats li{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--orange);border-radius:10px;padding:14px 16px}
+.feats b{display:block;font-size:22px;color:var(--lime);font-family:Stencil,Saira,sans-serif;font-weight:400}
+.final{text-align:center;padding:90px 16px 40px}
+.final p{color:var(--muted);margin:0 0 26px}
+footer{border-top:1px solid var(--line);margin-top:60px;padding:24px 16px 32px;text-align:center;font-size:14px;color:var(--muted)}
+footer a{margin:0 10px}
+
+@media (max-width:820px){
+  .towers{grid-template-columns:repeat(2,1fr)}
+  .feats{grid-template-columns:1fr 1fr}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .shots,.feats{grid-template-columns:1fr}
+  .cta{width:100%;justify-content:center}
+  .hero{padding-bottom:6vh}
+  .hero::before{background-position:80% 30%}
+}
+@media (prefers-reduced-motion:reduce){.hero::before,.cta{animation:none}}
+html:not([lang=en]) [data-en],html[lang=en] [data-de]{display:none!important}
+</style>
+</head>
+<body>
+<div class="lang" role="group" aria-label="Sprache / Language">
+  <button type="button" data-set="de" aria-pressed="true">DE</button>
+  <button type="button" data-set="en" aria-pressed="false">EN</button>
+</div>
+
+<header class="hero">
+  <div class="hero-in">
+    <img class="logo" src="img/logo.webp" alt="Roofkeep" width="1100" height="296">
+    <p class="tag"><span data-de>Halte die Dächer.</span><span data-en>Hold the rooftops.</span></p>
+    <p class="sub">
+      <span data-de>Bau Türme aus Schrott, spring jederzeit selbst hinein und hol die Drohnen eigenhändig vom Himmel. Tower Defense und Shooter in einem – allein oder mit bis zu drei Freunden.</span>
+      <span data-en>Build turrets out of scrap, jump into any of them and shoot the drones down yourself. Tower defense and shooter in one – solo or with up to three friends.</span>
+    </p>
+    <a class="cta play" href="#" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></svg>
+      <span data-de>Jetzt kostenlos spielen</span><span data-en>Play free now</span>
+    </a>
+    <div class="meta">
+      <span data-de>auf CrazyGames</span><span data-en>on CrazyGames</span>
+      <span data-de>im Browser, ohne Download</span><span data-en>in your browser, no download</span>
+      <span data-de>PC &amp; Handy (quer)</span><span data-en>PC &amp; phone (landscape)</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section>
+    <h2><span data-de>Planen. <em>Reinspringen.</em> Abräumen.</span><span data-en>Plan. <em>Jump in.</em> Clear the sky.</span></h2>
+    <p class="lead">
+      <span data-de>Von oben stellst du deine Verteidigung auf. Wird es eng, übernimmst du einen Turm in der Ich-Perspektive – deine Treffer sitzen härter als die der Automatik.</span>
+      <span data-en>From above you set up your defense. When things get tight, take over a turret in first person – your hits land harder than the autopilot's.</span>
+    </p>
+    <div class="shots">
+      <figure class="shot"><img src="img/shot-uebersicht.webp" alt="" loading="lazy" width="1280" height="720"><figcaption><b data-de>Übersicht:</b><b data-en>Overview:</b> <span data-de>Türme entlang der Drohnenroute bauen und ausbauen.</span><span data-en>Build and upgrade turrets along the drone route.</span></figcaption></figure>
+      <figure class="shot"><img src="img/shot-turm.webp" alt="" loading="lazy" width="1280" height="720"><figcaption><b data-de>Im Turm:</b><b data-en>In the turret:</b> <span data-de>selbst zielen, schießen, Spezialangriff zünden.</span><span data-en>aim, shoot and fire the special attack yourself.</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2><span data-de>Vier Türme aus <em>Schrott</em></span><span data-en>Four turrets made of <em>scrap</em></span></h2>
+    <p class="lead"><span data-de>Jeder mit zwei Ausbaupfaden – und jeden kannst du selbst steuern.</span><span data-en>Each with two upgrade paths – and you can take control of every one.</span></p>
+    <div class="towers">
+      <div class="tower"><img src="img/tower_dish.webp" alt="" loading="lazy"><b data-de>Schüssel</b><b data-en>Dish</b><span data-de>schnell &amp; präzise</span><span data-en>fast &amp; precise</span></div>
+      <div class="tower"><img src="img/tower_kettle.webp" alt="" loading="lazy"><b data-de>Kessel</b><b data-en>Kettle</b><span data-de>Flächenschaden</span><span data-en>area damage</span></div>
+      <div class="tower"><img src="img/tower_froster.webp" alt="" loading="lazy"><b>Froster</b><span data-de>bremst ganze Schwärme</span><span data-en>slows whole swarms</span></div>
+      <div class="tower"><img src="img/tower_trafo.webp" alt="" loading="lazy"><b>Trafo</b><span data-de>Ketten-Blitze</span><span data-en>chain lightning</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span data-de>Was dich erwartet</span><span data-en>What's waiting for you</span></h2>
+    <ul class="feats">
+      <li><b>10</b><span data-de>Level auf 3 Dach-Karten plus Endlos-Modus</span><span data-en>levels on 3 rooftop maps plus endless mode</span></li>
+      <li><b>4</b><span data-de>Spieler im Online-Koop, gemeinsamer Schrott</span><span data-en>players in online co-op, shared scrap</span></li>
+      <li><b>6</b><span data-de>Crew-Mitglieder mit eigenen Boni</span><span data-en>crew members with their own bonuses</span></li>
+      <li><b>5</b><span data-de>Drohnentypen – inklusive Boss</span><span data-en>drone types – boss included</span></li>
+      <li><b>8</b><span data-de>Ausbaupfade für deine Türme</span><span data-en>upgrade paths for your turrets</span></li>
+      <li><b>∞</b><span data-de>Tagesaufgaben und Ränge</span><span data-en>daily challenges and ranks</span></li>
+    </ul>
+  </section>
+
+  <div class="final">
+    <h2><span data-de>Die Drohnen sind schon unterwegs.</span><span data-en>The drones are already on their way.</span></h2>
+    <p><span data-de>Kostenlos im Browser spielen – auf CrazyGames.</span><span data-en>Play for free in your browser – on CrazyGames.</span></p>
+    <a class="cta play" href="#" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></svg>
+      <span data-de>Roofkeep spielen</span><span data-en>Play Roofkeep</span>
+    </a>
+  </div>
+</main>
+
+<footer>
+  <a href="impressum.html">Impressum / Legal notice</a>·<a href="datenschutz.html">Datenschutz / Privacy</a>
+  <p>© denkgold · Roofkeep</p>
+</footer>
+
+<script>
+// Spiel-Link bei CrazyGames
+var PLAY_URL = 'https://www.crazygames.com/game/roofkeep';
+document.querySelectorAll('.play').forEach(function (a) { a.href = PLAY_URL; });
+function setLang(l) {
+  document.documentElement.lang = l;
+  document.querySelectorAll('.lang button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.set === l)); });
+  try { localStorage.setItem('lang', l); } catch (e) {}
+}
+var saved; try { saved = localStorage.getItem('lang'); } catch (e) {}
+setLang(saved || (/^de/i.test(navigator.language) ? 'de' : 'en'));
+document.querySelectorAll('.lang button').forEach(function (b) { b.onclick = function () { setLang(b.dataset.set); }; });
+</script>
+</body>
+</html>
